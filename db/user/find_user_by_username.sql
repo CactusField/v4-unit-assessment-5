@@ -1,1 +1,1 @@
-SELECT * FROM helo_users WHERE username = $1;
+select * from helo_users where username=$1;

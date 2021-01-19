@@ -4,6 +4,9 @@ import homeLogo from './../../assets/home_logo.png';
 import newLogo from './../../assets/new_logo.png';
 import logoutLogo from './../../assets/shut_down.png';
 import './Nav.css';
+import { Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { updateUser,logout } from '../../redux/reducer'
 
 class Nav extends Component {
   constructor(props) {
@@ -13,34 +16,49 @@ class Nav extends Component {
     this.getUser = this.getUser.bind(this);
   }
 
-  componentDidMount() {
+  componentWillUnmount() {    
     this.getUser()
   }
 
   getUser() {
     axios.get('/api/auth/me')
-    .then(res => 'replace this string with something useful')
+    .then(res => {    
+      console.log(res.data)  
+      this.props.updateUser(res.data)})
+      .catch(e=>console.log(e))
   }
   
   logout() {
     axios.post('/api/auth/logout')
-      .then(_ => 'replace this string with something else')
+      .then(res =>  this.props.logout())
+      .catch(e=>console.log(e))
   }
   
-  render() {
+  render() {      
       return this.props.location.pathname !== '/' &&
         <div className='nav'>
           <div className='nav-profile-container'>
-            <div className='nav-profile-pic'></div>
-            <p>placeholder username</p>
+            <div className='nav-profile-pic' style={{backgroundImage:`url(${this.props.pic})`}}></div>
+            <p>{this.props.username}</p>
           </div>
           <div className='nav-links'>
-            <img className='nav-img' src={homeLogo} alt='home' />
-            <img className='nav-img' src={newLogo} alt='new post' />
+            <Link to='/dash'>
+              <img className='nav-img ' src={homeLogo} alt='home' />
+            </Link>
+            <Link to='/form'>
+              <img className='nav-img' src={newLogo} alt='new post' />
+            </Link>
           </div>
-          <img className='nav-img logout' src={logoutLogo} alt='logout' />
+          <Link to='/' onClick={()=>this.logout()}>
+            <img className='nav-img logout' src={logoutLogo} alt='logout' />
+          </Link>
         </div>
   }
 }
 
-export default Nav;
+function mapStateToProps(reduxState){
+  
+  return reduxState 
+}
+
+export default  withRouter(connect(mapStateToProps,{updateUser,logout})(Nav)); 

@@ -15,5 +15,6 @@ CREATE TABLE helo_posts (
     title VARCHAR(100) NOT NULL,
     content text,
     img text,
-    author_id INT REFERENCES helo_users(id),date_created TIMESTAMP);
+    author_id INT REFERENCES helo_users(id),
+    date_created TIMESTAMP
 );
