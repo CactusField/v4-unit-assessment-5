@@ -38,7 +38,14 @@ module.exports = {
       }
     },
     createPost: (req, res) => {
-      //code here
+      const {title, img, content} = req.body
+      let date = new Date()
+      const db = req.app.get('db')
+      if(!req.session.user.id)
+      return res.sendStatus(403)
+      const [newPost]= await db.post.create_post(req.session.user.id,title,img,content,date)
+      res.status(201).send(newPost)
+      
     },
     readPost: (req, res) => {
       req.app.get('db').post.read_post(req.params.id)
